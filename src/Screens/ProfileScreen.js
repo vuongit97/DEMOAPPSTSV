@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, StyleSheet, AsyncStorage, Image , TouchableOpacity} from 'react-native';
+import { Text, View, StyleSheet, AsyncStorage, Image, TouchableOpacity } from 'react-native';
 import env from '../environment/env';
 
 const BASE_URL = env;
@@ -12,7 +12,7 @@ const email = require('../Images/email1.png');
 const address = require('../Images/address.png');
 
 export default class MainScreen extends React.Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             firstName: '',
@@ -24,13 +24,13 @@ export default class MainScreen extends React.Component {
             birthday: ''
         }
     }
-    componentDidMount = async()=> {
+    componentWillMount = async () => {
         this._getInfomation();
     }
-    logoutClick = () =>{
+    logoutClick = () => {
         alert('Onclick');
         this.props.navigation.navigate('Login')
-    } 
+    }
     _getInfomation = async () => {
         const userToken = await AsyncStorage.getItem(STORAGE_KEY);
         let url = BASE_URL + 'Account/GetUserInformation'
@@ -40,57 +40,56 @@ export default class MainScreen extends React.Component {
                 Authorization: 'Bearer ' + userToken,
             },
         })
-        .then((res) => res.json())
-        .then((resJson) => {
-            this.setState({
-                firstName: resJson.firstName,
-                lastName: resJson.lastName,
-                sdt: resJson.phoneNumber,
-                email: resJson.email,
-                address: resJson.address,
-                maSV: resJson.userName,
-                birthday: resJson.dateOfBirth
-            })
-           // console.warn(resJson);
-        });
+            .then((res) => res.json())
+            .then((resJson) => {
+                this.setState({
+                    firstName: resJson.firstName,
+                    lastName: resJson.lastName,
+                    sdt: resJson.phoneNumber,
+                    email: resJson.email,
+                    address: resJson.address,
+                    maSV: resJson.userName,
+                    birthday: resJson.dateOfBirth
+                })
+            });
     }
-    render(){
-        return(
+    render() {
+        return (
             <View style={styles.container}>
                 <View style={styles.conProfile}>
-                    <Image source = {profile} style = {styles.imageProfile}/>
-                    <View style = {styles.conProfile}>
-                        <Text style = {styles.name}>Hello {this.state.lastName} {this.state.firstName}</Text>
-                        <TouchableOpacity style = {styles.logout} onPress = {() => this.logoutClick()}><Text>Logout</Text></TouchableOpacity>
+                    <Image source={profile} style={styles.imageProfile} />
+                    <View style={styles.conProfile}>
+                        <Text style={styles.name}>Hello {this.state.lastName} {this.state.firstName}</Text>
+                        <TouchableOpacity style={styles.logout} onPress={() => this.logoutClick()}><Text>Logout</Text></TouchableOpacity>
                     </View>
                 </View>
-                <View style = {{width:'100%'}}>
-                    <View style = {styles.comPhone}>
-                        <Image source = {id} style = {styles.icon}/>  
+                <View style={{ width: '100%' }}>
+                    <View style={styles.comPhone}>
+                        <Image source={id} style={styles.icon} />
                         <Text style={styles.text}>
                             {this.state.maSV}
                         </Text>
                     </View>
-                    <View style = {styles.comPhone}>
-                        <Image source = {phone} style = {styles.icon}/>  
+                    <View style={styles.comPhone}>
+                        <Image source={phone} style={styles.icon} />
                         <Text style={styles.text}>
                             {this.state.sdt}
                         </Text>
                     </View>
-                    <View style = {styles.comPhone}>
-                        <Image source = {email} style = {styles.icon}/>  
+                    <View style={styles.comPhone}>
+                        <Image source={email} style={styles.icon} />
                         <Text style={styles.text}>
                             {this.state.email}
                         </Text>
                     </View>
-                    <View style = {styles.comPhone}>
-                        <Image source = {address} style = {styles.icon}/>  
+                    <View style={styles.comPhone}>
+                        <Image source={address} style={styles.icon} />
                         <Text style={styles.text}>
                             {this.state.address}
                         </Text>
                     </View>
-                    <View style = {styles.comPhone}>
-                        <Image source = {birthday} style = {styles.icon}/>  
+                    <View style={styles.comPhone}>
+                        <Image source={birthday} style={styles.icon} />
                         <Text style={styles.text}>
                             {this.state.birthday}
                         </Text>
@@ -103,47 +102,41 @@ export default class MainScreen extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-        flex : 1,
-        backgroundColor : '#fff',
-        //justifyContent : 'center',
-        alignItems : 'center',
+        flex: 1,
+        backgroundColor: '#fff',
     },
     text: {
-        fontSize : 20
+        fontSize: 20
     },
     name: {
         fontSize: 20,
         marginTop: 10,
-    },  
+    },
     conProfile: {
-        height: '60%',
-        width:'100%',
-        flex: 0.5,
+        width: '100%',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#81F7F3',
-        //borderBottomLeftRadius: 50,
-        //borderBottomRightRadius: 50,
     },
     imageProfile: {
-        height: '55%',
-        width: '55%',
-        marginTop: 30
+        height: 60,
+        width: 60,
+        marginTop: 10
     },
     logout: {
-        marginTop: 20,
+        marginVertical: 10,
         color: 'green'
     },
     icon: {
         height: 30,
         width: 30,
-        marginRight:10
+        marginRight: 10
     },
-    comPhone:{
+    comPhone: {
         flexDirection: 'row',
-        marginTop:20,
+        marginTop: 20,
         paddingLeft: 10,
-        paddingRight:15
+        paddingRight: 15
     }
 })
