@@ -57,7 +57,7 @@ export default class SiderBarComponent extends Component {
                 </View>
                 <TouchableOpacity onPress={()=>this._signOutAsync()} style={styles.btnSignOut}>
                     <Image source = {logout} resizeMode="contain" style = {styles.icon} />
-                    <Text style={styles.signOutText}>Sign out</Text>
+                    <Text style={styles.signOutText}>Thoát ứng dụng</Text>
                 </TouchableOpacity>
             </View>
         )
