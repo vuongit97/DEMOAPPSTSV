@@ -42,8 +42,10 @@ _onChaneConfim = (ConPass) => {
 }
 
 _onPressForgot = () => {
-  AsyncStorage.getItem(STORAGE_KEY).then((user_data_json) => {
-    this.setState({loading: true});
+  AsyncStorage.getItem('accessToken').then((token) => {
+    this.setState({
+      isLoading: false
+    });
   let token = user_data_json;
   if (token === undefined) {
       var{navigate} = this.props.navigation;
