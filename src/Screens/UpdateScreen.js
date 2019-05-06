@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, StyleSheet, Platform, Image, TextInput, TouchableHighlight, TouchableOpacity,ScrollView} from 'react-native';
+import {View, Text, StyleSheet, AsyncStorage, Image, TextInput, TouchableHighlight,ScrollView} from 'react-native';
 import HeaderComponent from '../Components/HeaderComponent';
 import env from '../environment/env';
 
