@@ -8,9 +8,11 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "axios": "^0.18.0",
     "react": "16.8.3",
     "react-native": "0.59.2",
     "react-native-gesture-handler": "^1.1.0",
+    "react-native-image-crop-picker": "^0.24.0",
     "react-native-picker-module": "^0.1.2",
     "react-native-simple-radio-button": "^2.7.3",
     "react-native-table-component": "^1.2.0",
