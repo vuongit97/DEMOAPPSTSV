@@ -77,7 +77,7 @@ export default class XinBangDiemScreen extends Component {
                         <ReactNativePickerModule
                             pickerRef={e => this.pickerRef = e}
                             value={this.state.valueSemester}
-                            title={"Select Semester"}
+                            title={"Chọn Học Kỳ"}
                             items={this.state.Semester}
                             onValueChange={(i) => {
                                 this.setState({

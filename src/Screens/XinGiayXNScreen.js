@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, TextInput, TouchableHighlight, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, TextInput, TouchableHighlight, TouchableOpacity, ScrollView, Linking } from 'react-native';
 import HeaderComponent from '../Components/HeaderComponent';
 import ReactNativePickerModule from 'react-native-picker-module';
+import qs from 'qs';
 
 const xinGiay = require('../Images/xinGiay.png');
 const nganhHoc = require('../Icons/nganhHocIcon.png');
@@ -10,6 +11,34 @@ const name = require('../Icons/name.png');
 const tinh = require('../access/Tinh.json');
 const huyen = require('../access/quan_huyen.json');
 const xa = require('../access/xa_phuong.json');
+
+async function sendEmail(to, subject, body, options = {}) {
+    const { cc, bcc } = options;
+
+    let url = `mailto:${to}`;
+
+    // Create email link query
+    const query = qs.stringify({
+        subject: subject,
+        body: body,
+        cc: cc,
+        bcc: bcc
+    });
+
+    if (query.length) {
+        url += `?${query}`;
+    }
+
+    // check if we can use this link
+    const canOpen = await Linking.canOpenURL(url);
+
+    if (!canOpen) {
+        throw new Error('Provided URL can not be handled');
+    }
+
+    return Linking.openURL(url);
+}
+
 
 export default class XinGiayXNScreen extends Component {
     static navigationOptions = {
@@ -21,18 +50,24 @@ export default class XinGiayXNScreen extends Component {
         super(props);
         this.state = {
             fullName: '',
-            yearStudent: '',
+            addRess: '',
+            yearStudent: 1,
             valueRole: null,
             Role: ['Male', 'Female'],
             valueTinh: null,
-            nameTinh: 'Chọn Tỉnh/Thành',
+            nameTinh: '',
+            valueBirthPlace: null,
+            birthPlace: '',
             tinhList: [],
             valueHuyen: null,
-            nameHuyen: 'Chọn Quận/Huyện',
+            nameHuyen: '',
             huyenList: [],
             valueXa: null,
-            nameXa: 'Chọn Xã/Phường',
-            xaList: []
+            nameXa: '',
+            xaList: [],
+            yearStudentList: ["1", "2", "3"],
+            semester: "",
+            reason: "",
         }
         this.tinhArr = [];
         this.huyenArr = [];
@@ -43,9 +78,32 @@ export default class XinGiayXNScreen extends Component {
     _onYearStudent = (yearStudent) => {
         this.setState({ yearStudent });
     }
-    _onPressConfirm = () => { }
 
-    componentDidMount() {
+    _onPressConfirm = () => {
+        // console.log(`${this.state.addRess != ""} ${this.state.nameTinh} ${this.state.nameHuyen} ${this.state.nameXa} ${this.state.birthPlace} ${this.state.semester} ${this.state.reason}`);
+        console.log(this.state.addRess != "" && this.state.nameTinh != "" && this.state.nameHuyen != "" && this.state.nameXa != "" && this.state.birthPlace != "" && this.state.semester != "" && this.state.reason != "");
+        let to = "vuongit97@gmail.com";
+        let subject = "Xin giấy xác nhận";
+        let body =
+`- Địa chỉ: ${this.state.addRess}
+- Tỉnh/Thành phố: ${this.state.nameTinh}
+- Huyện/quận: ${this.state.nameHuyen}
+- Xã/phường: ${this.state.nameXa}
+- Nơi sinh: ${this.state.birthPlace}
+- Sinh viên năm: ${this.state.yearStudent}
+- Học kỳ: ${this.state.semester}
+- Lý do: ${this.state.reason}`;
+
+        sendEmail(
+            to,
+            subject,
+            body,
+        ).then(() => {
+            console.log('Our email successful provided to device mail ');
+        });
+    }
+
+    componentWillMount() {
         this.getdata();
     }
 
@@ -74,8 +132,8 @@ export default class XinGiayXNScreen extends Component {
     onChangeText = (text) => {
         var display = [];
         this.setState({
-            nameHuyen: 'Select Huyen',
-            nameXa: 'Select Xa'
+            nameHuyen: '',
+            nameXa: ''
         })
         if (this.tinhArr) {
             var len = this.tinhArr.length;
@@ -114,7 +172,7 @@ export default class XinGiayXNScreen extends Component {
     onChangeHuyen = (text) => {
         var display = [];
         this.setState({
-            nameXa: 'Select Xa'
+            nameXa: ''
         })
         if (this.huyenArr) {
             var len = this.huyenArr.length;
@@ -153,6 +211,7 @@ export default class XinGiayXNScreen extends Component {
                             <Image style={styles.inputIcon} source={name} />
                             <TextInput style={styles.textInput}
                                 placeholder="Số nhà, đường hoặc Thôn"
+                                placeholderTextColor={"black"}
                                 keyboardType="default"
                                 underlineColorAndroid='transparent'
                                 onChangeText={this._onAddRess.bind(this)}
@@ -163,7 +222,7 @@ export default class XinGiayXNScreen extends Component {
                             <ReactNativePickerModule
                                 pickerRef={e => this.pickerRef1 = e}
                                 value={this.state.valueTinh}
-                                title={"Select City"}
+                                title={"Chọn Tỉnh/Thành"}
                                 items={this.state.tinhList}
                                 onValueChange={(i) => {
                                     this.onChangeText(this.state.tinhList[i]);
@@ -173,14 +232,15 @@ export default class XinGiayXNScreen extends Component {
                                     })
                                 }}
                             />
-                            <Text style={styles.text}>{this.state.nameTinh}</Text>
+                            <TextInput style={styles.textInput} editable={false} placeholder={"Chọn Tỉnh/Thành"}
+                                placeholderTextColor={"black"}>{this.state.nameTinh}</TextInput>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.inputContainer} onPress={() => { this.pickerRef2.show() }}>
                             <Image style={styles.inputIcon} source={Address} />
                             <ReactNativePickerModule
                                 pickerRef={e => this.pickerRef2 = e}
                                 value={this.state.valueHuyen}
-                                title={"Select Quan/Huyen"}
+                                title={"Chọn Quận/Huyện"}
                                 items={this.state.huyenList}
                                 onValueChange={(i) => {
                                     this.onChangeHuyen(this.state.huyenList[i])
@@ -189,14 +249,15 @@ export default class XinGiayXNScreen extends Component {
                                         nameHuyen: this.state.huyenList[i]
                                     })
                                 }} />
-                            <Text style={styles.text}>{this.state.nameHuyen}</Text>
+                            <TextInput style={styles.textInput} editable={false} placeholder={"Chọn Quận/Huyện"}
+                                placeholderTextColor={"black"}>{this.state.nameHuyen}</TextInput>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.inputContainer} onPress={() => { this.pickerRef3.show() }}>
                             <Image style={styles.inputIcon} source={Address} />
                             <ReactNativePickerModule
                                 pickerRef={e => this.pickerRef3 = e}
                                 value={this.state.valueXa}
-                                title={"Select Xa/Phuong/T.Tran"}
+                                title={"Chọn Xã/Phường/T.Trấn"}
                                 items={this.state.xaList}
                                 onValueChange={(i) => {
                                     this.setState({
@@ -204,40 +265,54 @@ export default class XinGiayXNScreen extends Component {
                                         nameXa: this.state.xaList[i]
                                     })
                                 }} />
-                            <Text style={styles.text}>{this.state.nameXa}</Text>
+                            <TextInput style={styles.textInput} editable={false} placeholder={"Chọn Xã/Phường"}
+                                placeholderTextColor={"black"}>{this.state.nameXa}</TextInput>
                         </TouchableOpacity>
                         <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginBottom: 10 }}>
                             <Text style={{ fontWeight: "bold", marginRight: 10 }}>NƠI SINH: </Text>
-                            <TouchableOpacity style={[styles.inputContainer, { flex: 1 }]} onPress={() => { this.pickerRef1.show() }}>
+                            <TouchableOpacity style={[styles.inputContainer, { flex: 1 }]} onPress={() => { this.pickerRef4.show() }}>
                                 <Image style={styles.inputIcon} source={Address} />
                                 <ReactNativePickerModule
-                                    pickerRef={e => this.pickerRef1 = e}
-                                    value={this.state.valueTinh}
-                                    title={"Select City"}
+                                    pickerRef={e => this.pickerRef4 = e}
+                                    value={this.state.valueBirthPlace}
+                                    title={"Chọn Tỉnh/Thành"}
                                     items={this.state.tinhList}
                                     onValueChange={(i) => {
-                                        this.onChangeText(this.state.tinhList[i]);
                                         this.setState({
                                             valueTinh: i,
-                                            nameTinh: this.state.tinhList[i]
+                                            birthPlace: this.state.tinhList[i]
                                         })
                                     }}
                                 />
-                                <Text style={styles.text}>{this.state.nameTinh}</Text>
+                                <TextInput numberOfLines={1} editable={false} style={[styles.textInput, { flex: 1 }]} placeholder={"Chọn Tỉnh/Thành"}
+                                    placeholderTextColor={"black"}>{this.state.birthPlace}</TextInput>
                             </TouchableOpacity>
                         </View>
 
                         <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginBottom: 10 }}>
                             <Text style={{ fontWeight: "bold", marginRight: 10 }}>Sinh viên năm: </Text>
-                            <View style={[styles.inputContainer, { flex: 1 }]}>
+                            <TouchableOpacity style={[styles.inputContainer, { flex: 1 }]} onPress={() => { this.pickerRef5.show() }}>
                                 <Image style={styles.inputIcon} source={nganhHoc} />
-                                <TextInput style={styles.textInput}
+                                {/* <TextInput style={styles.textInput}
                                     placeholder="1"
                                     keyboardType="number-pad"
+                                    keyboardType='numeric'
                                     underlineColorAndroid='transparent'
                                     onChangeText={this._onYearStudent.bind(this)}
+                                /> */}
+                                <ReactNativePickerModule
+                                    pickerRef={e => this.pickerRef5 = e}
+                                    value={this.state.yearStudent}
+                                    title={"Chọn Năm Học"}
+                                    items={this.state.yearStudentList}
+                                    onValueChange={(i) => {
+                                        this.setState({
+                                            yearStudent: (i + 1) * 1
+                                        })
+                                    }}
                                 />
-                            </View>
+                                <TextInput numberOfLines={1} editable={false} style={[styles.textInput, { flex: 1 }]}>{`${this.state.yearStudent * 1}`}</TextInput>
+                            </TouchableOpacity>
                         </View>
 
 
@@ -246,25 +321,33 @@ export default class XinGiayXNScreen extends Component {
                             <View style={[styles.inputContainer, { flex: 1 }]}>
                                 <TextInput style={styles.textInput}
                                     placeholder="I/2015 - 2016"
+                                    placeholderTextColor={"black"}
                                     keyboardType="default"
                                     underlineColorAndroid='transparent'
-                                    onChangeText={this._onAddRess.bind(this)}
+                                    value={this.state.semester}
+                                    onChangeText={(text) => this.setState({
+                                        semester: text
+                                    })}
                                 />
                             </View>
                         </View>
 
                         <Text style={{ fontWeight: "bold", marginBottom: 10 }}>LÝ DO: </Text>
-                        <View style={[styles.inputContainer, { height: 150 }]}>
-                            <TextInput style={[styles.textInput, { height: 150 }]}
+                        <View style={[styles.inputContainer, { height: 90 }]}>
+                            <TextInput style={[styles.textInput, { height: 90 }]}
                                 multiline={true}
                                 numberOfLines={4}
                                 placeholder=""
+                                placeholderTextColor={"black"}
                                 keyboardType="default"
                                 underlineColorAndroid='transparent'
-                                onChangeText={this._onAddRess.bind(this)}
+                                value={this.state.reason}
+                                onChangeText={(text) => this.setState({
+                                    reason: text
+                                })}
                             />
                         </View>
-                        <TouchableHighlight style={[styles.buttonContainer]} onPress={this._onPressConfirm.bind(this)}>
+                        <TouchableHighlight disabled={!(this.state.addRess != "" && this.state.nameTinh != "" && this.state.nameHuyen != "" && this.state.nameXa != "" && this.state.birthPlace != "" && this.state.semester != "" && this.state.reason != "")} style={[styles.buttonContainer]} onPress={this._onPressConfirm.bind(this)}>
                             <Text style={styles.loginText}>Đăng ký</Text>
                         </TouchableHighlight>
                     </ScrollView>
@@ -307,6 +390,7 @@ const styles = StyleSheet.create({
         height: 45,
         marginLeft: 16,
         borderBottomColor: '#FFFFFF',
+        color: "black",
         flex: 1,
     },
     buttonContainer: {
