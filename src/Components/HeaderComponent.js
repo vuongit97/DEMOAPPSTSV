@@ -1,14 +1,63 @@
 import React, { Component } from 'react';
 import {
-  View, Image, TouchableHighlight,Text
+  View, Image, TouchableHighlight, Text
 } from 'react-native';
 
 export default class HeaderComponent extends Component {
-  componentDidMount(){
+  constructor(props) {
+    super(props);
+    this.state = {
+      routerName: "",
+    }
+  }
+
+  componentWillMount() {
+    this._handleTitleHeader();
+  }
+
+  _handleTitleHeader() {
+    if (this.props.navigation.state.key == 'Home') {
+      this.setState({
+        routerName: "Trang chủ",
+      });
+    }
+    else if (this.props.navigation.state.key == 'ChangePass') {
+      this.setState({
+        routerName: "Đổi mật khẩu",
+      });
+    }
+    else if (this.props.navigation.state.key == 'Update') {
+      this.setState({
+        routerName: "Cập nhật thông tin",
+      });
+    }
+    else if (this.props.navigation.state.key == 'XinGiayXN') {
+      this.setState({
+        routerName: "Xin giấy xác nhận",
+      });
+    }
+    else if (this.props.navigation.state.key == 'XinBangDiem') {
+      this.setState({
+        routerName: "Xin bảng điểm",
+      });
+    }
+    else if (this.props.navigation.state.key == 'XemTKB') {
+      this.setState({
+        routerName: "Xem thời khoá biểu",
+      });
+    }
+    else {
+      this.setState({
+        routerName: "",
+      });
+    }
+  }
+
+  componentDidMount() {
     this.props.navigation.closeDrawer();
   }
+
   render() {
-    const key = this.props.navigation.state ? this.props.navigation.state.key : '';
     return (
       <View style={{
         height: 70,
@@ -16,7 +65,7 @@ export default class HeaderComponent extends Component {
         justifyContent: 'flex-start',
         alignItems: 'center',
         backgroundColor: '#29ACE4'
-        }}
+      }}
       >
         <TouchableHighlight
           style={{ marginLeft: 7, marginTop: 7 }}
@@ -26,7 +75,7 @@ export default class HeaderComponent extends Component {
             source={require('../Icons/menuIcon.png')}
           />
         </TouchableHighlight>
-        <Text style = {{position: 'absolute', left: '20%',  fontWeight: '700', fontSize: 25,color: 'black',top: 30}}>{key}</Text>
+        <Text style={{ position: 'absolute', left: '20%', fontWeight: '700', fontSize: 25, color: 'black', top: 30 }}>{this.state.routerName}</Text>
       </View>
     );
   }

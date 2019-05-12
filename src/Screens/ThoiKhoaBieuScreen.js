@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableHighlight, Image, Alert, ScrollView, AsyncStorage } from 'react-native';
-import { Table, TableWrapper, Row, Rows, Col } from 'react-native-table-component';
+import { Table, Row } from 'react-native-table-component';
 import HeaderComponent from '../Components/HeaderComponent';
 import env from '../environment/env';
 const BASE_URL = env;
@@ -14,7 +14,7 @@ export default class ThoiKhoaBieuScreen extends Component {
     )
   };
 
-  componentDidMount = async () => {
+  componentWillMount = async () => {
     const userToken = await AsyncStorage.getItem(STORAGE_KEY);
     let url = BASE_URL + 'Account/GetSchedule';
     fetch(url, {
@@ -25,100 +25,84 @@ export default class ThoiKhoaBieuScreen extends Component {
     })
       .then((res) => res.json())
       .then((resJson) => {
-        console.log("red", resJson);
         this.setState({ data: resJson })
-        // var tableHead = [];
-        // for (let i = 0; i < resJson.length; i++) {
-        //    tableHead.push
-        // }
-        // console.warn(resJson);
+        for (let i = 0; i < resJson.length; i++) {
+          for (let j = 0; j < resJson[i].listSubjectClassScheduleReturnModel.length; j++) {
+            this.setState({
+              tableData: [...this.state.tableData,
+              [
+                resJson[i].listSubjectClassScheduleReturnModel[j].code,
+                resJson[i].listSubjectClassScheduleReturnModel[j].name,
+                resJson[i].day_Of_Week,
+                `${resJson[i].listSubjectClassScheduleReturnModel[j].lessonStart}`,
+                `${resJson[i].listSubjectClassScheduleReturnModel[j].lessonEnd}`,
+                resJson[i].listSubjectClassScheduleReturnModel[j].lecturerName,
+              ]
+              ]
+            });
+          }
+        }
       });
   }
   constructor(props) {
     super(props);
     this.state = {
-      // tableHead: [' Tiết ', 'Sáng', 'Phòng', 'Chiều', 'Phòng'],
-      // tableTitle: ['Tiết 1', 'Tiết 2', 'Tiết 3', 'Tiết 4', 'Tiết 5'],
-      // tableData: [
-      //   ['Ly', '2', 'Hoa', '4'],
-      //   ['', '7', 'Toan', '0'],
-      //   ['', '', '', ''],
-      //   ['', '', '', ''],
-      //   ['', '', '', ''],
-      // ]
-      data: []
+      tableHead: ['Lớp', 'Môn học', 'Thứ', 'Từ tiết', 'Đến tiết', 'Giảng viên'],
+      widthArr: [100, 160, 60, 60, 60, 160],
+      tableData: [],
     }
   }
 
   render() {
-    var { data } = this.state;
-    console.log("data", data);
     return (
       <View style={{ flex: 1, }}>
         <HeaderComponent {...this.props}></HeaderComponent>
-        {/* <View style={styles.container}> */}
-        {/* <Table>
-            <Row data={this.state.tableHead} flexArr={[1, 2, 1, 2, 1]} style={styles.head} textStyle={styles.text} />
-            <TableWrapper style={styles.wrapper}>
-              <Col data={this.state.tableTitle} style={styles.title} textStyle={styles.text} />
-              <Rows data={this.state.tableData} flexArr={[2, 1, 2, 1]} style={styles.row} textStyle={styles.text} />
-            </TableWrapper>
-          </Table> */}
-        {
-          (data.length != 0) ?
-            <ScrollView
-            // style={{ backgroundColor: 'red' }}
-            >
-              {
-                data.map((item, index) => {
-                  var { day_Of_Week, listSubjectClassScheduleReturnModel } = item;
-                  return (
-                    <View key={index}
-                      style={{ margin: 10, borderRadius: 5, backgroundColor: '#f1f8ff', padding: 8 }}
-                    >
-                      <Text>Thứ {day_Of_Week}</Text>
-
-                      {
-                        listSubjectClassScheduleReturnModel.length != 0 ?
-                          <View style={{ flex: 1 }}>
-                            {
-                              listSubjectClassScheduleReturnModel.map((itemList, key) => {
-                                var { code, name, lessonStart, lessonEnd } = itemList;
-                                return (
-                                  <View styles={{ flexDirection: 'row', }} key={key}>
-                                    <Text>Mã lớp: {code}</Text>
-                                    <Text>Tên học phần: {name}</Text>
-                                    <Text>Tiết: {lessonStart}-{lessonStart}</Text>
-                                  </View>
-                                )
-                              })
-                            }
-                          </View>
-                          : <Text>Trống</Text>
-                      }
-
-                    </View>
-                  )
-                })
-              }
-            </ScrollView> : null
-        }
-
-        {/* </View> */}
+        <View style={styles.container}>
+          <ScrollView horizontal={true}>
+            <View>
+              <Table borderStyle={{ borderColor: '#C1C0B9' }}>
+                <Row data={this.state.tableHead} widthArr={this.state.widthArr} style={styles.header} textStyle={styles.text} />
+              </Table>
+              <ScrollView style={styles.dataWrapper}>
+                <Table borderStyle={{ borderColor: '#C1C0B9' }}>
+                  {
+                    this.state.tableData && this.state.tableData.length > 0 ?
+                      this.state.tableData.map((rowData, index) => (
+                        <Row
+                          key={index}
+                          data={rowData}
+                          widthArr={this.state.widthArr}
+                          style={[styles.row, index % 2 && { backgroundColor: '#F7F6E7' }]}
+                          textStyle={styles.text}
+                        />
+                      ))
+                      :
+                      <Row
+                        key={1}
+                        data={["Loading..."]}
+                        widthArr={[600]}
+                        style={{ height: 40, backgroundColor: '#F7F6E7' }}
+                        textStyle={styles.text}
+                      />
+                  }
+                </Table>
+              </ScrollView>
+            </View>
+          </ScrollView>
+        </View>
       </View>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff' },
-  head: { height: 40, backgroundColor: '#f1f8ff' },
-  wrapper: { flexDirection: 'row' },
-  title: { flex: 1, backgroundColor: '#f6f8fa', height: 140 },
-  row: { height: 28 },
-  text: { textAlign: 'center' },
   icon1: {
     width: 25,
     height: 25
   },
+  container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff' },
+  header: { height: 50, backgroundColor: '#537791' },
+  text: { textAlign: 'center', fontWeight: '100' },
+  dataWrapper: { marginTop: -1 },
+  row: { height: 40, backgroundColor: '#E7E6E1' }
 });

@@ -26,7 +26,7 @@ export default class MainScreen extends React.Component {
             urlAvatar: ''
         }
     }
-    componentDidMount = async () => {
+    componentWillMount = async () => {
         this._getInfomation();
     }
     logoutClick = () => {
@@ -44,7 +44,6 @@ export default class MainScreen extends React.Component {
         })
             .then((res) => res.json())
             .then((resJson) => {
-                console.log("resJson", resJson);
                 this.setState({
                     firstName: resJson.firstName,
                     lastName: resJson.lastName,
@@ -55,7 +54,6 @@ export default class MainScreen extends React.Component {
                     birthday: resJson.dateOfBirth,
                     urlAvatar: resJson.avatar
                 })
-                // console.warn(resJson);
             });
     }
 
@@ -102,13 +100,26 @@ export default class MainScreen extends React.Component {
         return (
             <View style={styles.container}>
                 <View style={styles.conProfile}>
-                    <Image
-                        source={{ uri: this.state.urlAvatar }}
-                        style={styles.imageProfile}
-                        resizeMode="center"
-                    />
+                    <TouchableOpacity
+                        onPress={() => this.handleImage()}
+                    >
+                        {
+                            this.state.urlAvatar ?
+                                <Image
+                                    source={{ uri: this.state.urlAvatar }}
+                                    style={styles.imageProfile}
+                                    resizeMode="center"
+                                />
+                                :
+                                <Image
+                                    source={profile}
+                                    style={styles.imageProfile}
+                                    resizeMode="center"
+                                />
+                        }
+                    </TouchableOpacity>
                     <View style={styles.conProfile}>
-                        <Text style={styles.name}>Hello {this.state.lastName} {this.state.firstName}</Text>
+                        <Text style={styles.name}>{this.state.lastName} {this.state.firstName}</Text>
                         <TouchableOpacity style={styles.logout} onPress={() => this.logoutClick()}><Text>Logout</Text></TouchableOpacity>
                     </View>
                 </View>
@@ -144,13 +155,6 @@ export default class MainScreen extends React.Component {
                         </Text>
                     </View>
                 </View>
-
-                <TouchableOpacity
-                    onPress={() => this.handleImage()}
-                >
-
-                    <Text>Change Avatar</Text>
-                </TouchableOpacity>
             </View>
         );
     }
@@ -171,23 +175,19 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     conProfile: {
-        height: '60%',
         width: '100%',
-        flex: 0.5,
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#81F7F3',
-        //borderBottomLeftRadius: 50,
-        //borderBottomRightRadius: 50,
     },
     imageProfile: {
-        height: '55%',
-        width: '55%',
-        marginTop: 30
+        height: 60,
+        width: 60,
+        marginTop: 10
     },
     logout: {
-        marginTop: 20,
+        marginVertical: 10,
         color: 'green'
     },
     icon: {

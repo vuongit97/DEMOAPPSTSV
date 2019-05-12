@@ -1,6 +1,6 @@
-import { createStackNavigator, createAppContainer , createSwitchNavigator, createBottomTabNavigator} from "react-navigation";
+import { createStackNavigator, createAppContainer, createSwitchNavigator, createBottomTabNavigator } from "react-navigation";
 import React from 'react';
-import {Image} from 'react-native';
+import { Image } from 'react-native';
 import MyApp from '../Navigations/DrawerNavigator';
 import LoginStackNavigator from './LoginStackNavigator';
 import SplashScreen from '../Screens/SplashScreen';
@@ -12,13 +12,13 @@ const profile = require('../Images/profile.png');
 const SplashStack = createStackNavigator(
   {
     splash: {
-      screen: SplashScreen,navigationOptions: {header: null} 
+      screen: SplashScreen, navigationOptions: { header: null }
     }
-})
+  })
 
 const stackProfile = createStackNavigator({
   Profile: {
-    screen: ProfileScreen, navigationOptions: {header: null}
+    screen: ProfileScreen, navigationOptions: { header: null }
   }
 })
 
@@ -27,18 +27,18 @@ const tabProfile = createBottomTabNavigator(
     Home: {
       screen: MyApp,
       navigationOptions: {
-        tabBarLabel:" ",
+        tabBarLabel: " ",
         tabBarIcon: ({ tintColor }) => (
-          <Image source = {home} style = {{height:40,width:40, marginTop: 25,paddingBottom:30}} />
+          <Image source={home} style={{ height: 40, width: 40, marginTop: 25, paddingBottom: 30 }} />
         )
       },
     },
     Profile: {
       screen: stackProfile,
       navigationOptions: {
-        tabBarLabel:" ",
+        tabBarLabel: " ",
         tabBarIcon: ({ tintColor }) => (
-          <Image source = {profile} style = {{height:40,width:40, marginTop: 25,paddingBottom:30}} />
+          <Image source={profile} style={{ height: 40, width: 40, marginTop: 25, paddingBottom: 30 }} />
         )
       },
     }
@@ -50,15 +50,15 @@ const tabProfile = createBottomTabNavigator(
 
 const RootStack = createSwitchNavigator(
   {
-    Splash: {screen: SplashStack,navigationOptions: {header: null} },
-    Login : {screen: LoginStackNavigator,navigationOptions: {header: null} },
-    Main : {screen: tabProfile,navigationOptions: {header: null} },
-    },
-    {
-      initialRouteName: 'Splash',
-      headerMode: null
-    }
-  );
+    Splash: { screen: SplashStack, navigationOptions: { header: null } },
+    Login: { screen: LoginStackNavigator, navigationOptions: { header: null } },
+    Main: { screen: tabProfile, navigationOptions: { header: null } },
+  },
+  {
+    initialRouteName: 'Splash',
+    headerMode: null
+  }
+);
 
 const AppContainer = createAppContainer(RootStack);
 
