@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet, Text, View, TextInput, TouchableHighlight, Image, AsyncStorage, ToastAndroid, ScrollView
+  StyleSheet, Text, View, TextInput, TouchableOpacity, Image, AsyncStorage, ToastAndroid, ScrollView
 } from 'react-native';
 import HeaderComponent from '../Components/HeaderComponent';
 import env from '../environment/env';
@@ -127,12 +127,12 @@ export default class ChangePassScreen extends Component {
               onChangeText={this._onChaneConfim.bind(this)} />
           </View>
           <View style={{ flexDirection: 'row', marginBottom: 20 }}>
-            <TouchableHighlight style={[styles.buttonContainer]} onPress={this._onPressForgot.bind(this)}>
+            <TouchableOpacity style={[styles.buttonContainer]} onPress={this._onPressForgot.bind(this)}>
               <Text style={styles.loginText}>Đổi</Text>
-            </TouchableHighlight>
-            <TouchableHighlight style={[styles.buttonContainer]} onPress={() => this.onClickCancel()}>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.buttonContainer]} onPress={() => this.onClickCancel()}>
               <Text style={styles.loginText}>Hủy</Text>
-            </TouchableHighlight>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>

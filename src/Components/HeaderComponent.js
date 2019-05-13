@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import {
-  View, Image, TouchableHighlight, Text
+  View, Image, TouchableOpacity, Text
 } from 'react-native';
 
 export default class HeaderComponent extends Component {
@@ -67,14 +67,14 @@ export default class HeaderComponent extends Component {
         backgroundColor: '#29ACE4'
       }}
       >
-        <TouchableHighlight
+        <TouchableOpacity
           style={{ marginLeft: 7, marginTop: 7 }}
           onPress={() => this.props.navigation.openDrawer()}>
           <Image
             style={{ width: 40, height: 40, marginTop: 20 }}
             source={require('../Icons/menuIcon.png')}
           />
-        </TouchableHighlight>
+        </TouchableOpacity>
         <Text style={{ position: 'absolute', left: '20%', fontWeight: '700', fontSize: 25, color: 'black', top: 30 }}>{this.state.routerName}</Text>
       </View>
     );

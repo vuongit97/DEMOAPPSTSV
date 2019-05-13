@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, TextInput, TouchableHighlight, TouchableOpacity, ScrollView, Linking } from 'react-native';
+import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ScrollView, Linking, Modal, Alert } from 'react-native';
 import HeaderComponent from '../Components/HeaderComponent';
 import ReactNativePickerModule from 'react-native-picker-module';
+import RNSmtpMailer from "react-native-smtp-mailer";
 import qs from 'qs';
 
 const xinGiay = require('../Images/xinGiay.png');
@@ -68,6 +69,9 @@ export default class XinGiayXNScreen extends Component {
             yearStudentList: ["1", "2", "3"],
             semester: "",
             reason: "",
+            modalVisible: false,
+            usernameMail: "",
+            passwordMail: "",
         }
         this.tinhArr = [];
         this.huyenArr = [];
@@ -79,28 +83,66 @@ export default class XinGiayXNScreen extends Component {
         this.setState({ yearStudent });
     }
 
+    setModalVisible(visible) {
+        this.setState({ modalVisible: visible });
+    }
+
     _onPressConfirm = () => {
-        // console.log(`${this.state.addRess != ""} ${this.state.nameTinh} ${this.state.nameHuyen} ${this.state.nameXa} ${this.state.birthPlace} ${this.state.semester} ${this.state.reason}`);
-        console.log(this.state.addRess != "" && this.state.nameTinh != "" && this.state.nameHuyen != "" && this.state.nameXa != "" && this.state.birthPlace != "" && this.state.semester != "" && this.state.reason != "");
+        this.setModalVisible(!this.state.modalVisible);
         let to = "vuongit97@gmail.com";
         let subject = "Xin giấy xác nhận";
-        let body =
-`- Địa chỉ: ${this.state.addRess}
-- Tỉnh/Thành phố: ${this.state.nameTinh}
-- Huyện/quận: ${this.state.nameHuyen}
-- Xã/phường: ${this.state.nameXa}
-- Nơi sinh: ${this.state.birthPlace}
-- Sinh viên năm: ${this.state.yearStudent}
-- Học kỳ: ${this.state.semester}
-- Lý do: ${this.state.reason}`;
+        let body = `- Địa chỉ: ${this.state.addRess}<br>- Tỉnh/Thành phố: ${this.state.nameTinh}<br>- Huyện/quận: ${this.state.nameHuyen}<br>- Xã/phường: ${this.state.nameXa}<br>- Nơi sinh: ${this.state.birthPlace}<br>- Sinh viên năm: ${this.state.yearStudent}<br>- Học kỳ: ${this.state.semester}<br>- Lý do: ${this.state.reason}`;
 
-        sendEmail(
-            to,
-            subject,
-            body,
-        ).then(() => {
-            console.log('Our email successful provided to device mail ');
-        });
+        // sendEmail(
+        //     to,
+        //     subject,
+        //     body,
+        // ).then(() => {
+        //     console.log('Our email successful provided to device mail ');
+        // });
+
+        RNSmtpMailer.sendMail({
+            mailhost: "smtp.gmail.com",
+            port: "465",
+            ssl: true,
+            username: this.state.usernameMail,
+            password: this.state.passwordMail,
+            from: this.state.usernameMail,
+            recipients: to,
+            subject: subject,
+            htmlBody: body,
+            attachmentPaths: [],
+            attachmentNames: [],
+            attachmentTypes: ["img", "txt", "csv", "pdf", "zip", "img"]
+        })
+            .then(success => {
+                Alert.alert(success);
+                this._sendEmailReplyAPI();
+            })
+            .catch(err => {
+                Alert.alert(err.message);
+            });
+    }
+
+
+    _sendEmailReplyAPI = async () => {
+        const userToken = await AsyncStorage.getItem(STORAGE_KEY);
+        let url = BASE_URL + 'Account/RegisFormPaper'
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                Authorization: 'Bearer ' + userToken,
+            },
+            body: {
+                "FormPaperId": "0f504d26-d1ae-4dfa-a10d-4c40ca6eab07"
+            }
+        })
+            .then((res) => res.json())
+            .then((resJson) => {
+                if (resJson == "true") {
+                    Alert.alert("Vui lòng kiểm tra thư của bạn.");
+                }
+            });
     }
 
     componentWillMount() {
@@ -205,13 +247,92 @@ export default class XinGiayXNScreen extends Component {
             <View>
                 <HeaderComponent {...this.props}></HeaderComponent>
                 <View style={styles.container}>
+                    <Modal
+                        animationType="slide"
+                        transparent={true}
+                        visible={this.state.modalVisible}
+                        onRequestClose={() => {
+                            Alert.alert('Modal has been closed.');
+                        }}>
+                        <View style={{ height: '70%', marginTop: 80, marginHorizontal: 40, justifyContent: "center", alignItems: "center", borderRadius: 5, backgroundColor: "#f1f1f1" }}>
+                            <View>
+                                <Text style={{ fontWeight: "bold", marginBottom: 20, textAlign: "center" }}>ĐĂNG NHẬP THƯ ĐIỆN TỬ</Text>
+                                <View style={
+                                    {
+                                        backgroundColor: '#ffffff',
+                                        padding: 10,
+                                        borderRadius: 10,
+                                        width: '80%',
+                                        height: 45,
+                                        marginBottom: 10,
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        shadowOffset: { width: 10, height: 10, },
+                                        shadowColor: 'grey',
+                                        shadowOpacity: 1.0,
+                                    }
+                                }>
+                                    <Image style={styles.inputIcon} source={name} />
+                                    <TextInput style={styles.textInput}
+                                        placeholder="Tên tài khoản"
+                                        keyboardType="default"
+                                        underlineColorAndroid='transparent'
+                                        onChangeText={(text) => this.setState({ usernameMail: text })}
+                                    />
+                                </View>
+                                <View
+                                    style={
+                                        {
+                                            backgroundColor: '#ffffff',
+                                            padding: 10,
+                                            borderRadius: 10,
+                                            width: '80%',
+                                            height: 45,
+                                            marginBottom: 10,
+                                            flexDirection: 'row',
+                                            alignItems: 'center',
+                                            shadowOffset: { width: 10, height: 10, },
+                                            shadowColor: 'grey',
+                                            shadowOpacity: 1.0,
+                                        }
+                                    }>
+                                    <Image style={styles.inputIcon} source={name} />
+                                    <TextInput style={styles.textInput}
+                                        placeholder="Mật khẩu"
+                                        keyboardType="default"
+                                        secureTextEntry={true}
+                                        underlineColorAndroid='transparent'
+                                        onChangeText={(text) => this.setState({ passwordMail: text })}
+                                    />
+                                </View>
+                                <TouchableOpacity
+                                    style={{
+                                        padding: 10,
+                                        borderRadius: 10,
+                                        height: 45,
+                                        marginBottom: 10,
+                                        flexDirection: 'row',
+                                        alignItems: 'center',
+                                        justifyContent: "center",
+                                        shadowOffset: { width: 10, height: 10, },
+                                        shadowColor: 'grey',
+                                        shadowOpacity: 1.0,
+                                        backgroundColor: "#00b5ec",
+                                    }}
+                                    disabled={!(this.state.usernameMail != "" && this.state.passwordMail != "")}
+                                    onPress={() => this._onPressConfirm()}
+                                >
+                                    <Text style={{ color: 'white', textAlign: "center" }}>ĐĂNG KÝ</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </Modal>
                     <ScrollView showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false} style={{ flex: 1, marginTop: 20, marginBottom: 100, width: '80%' }}>
                         <Text style={{ fontWeight: "bold", marginBottom: 10 }}>ĐỊA CHỈ THƯỜNG TRÚ: </Text>
                         <View style={styles.inputContainer}>
                             <Image style={styles.inputIcon} source={name} />
                             <TextInput style={styles.textInput}
                                 placeholder="Số nhà, đường hoặc Thôn"
-                                placeholderTextColor={"black"}
                                 keyboardType="default"
                                 underlineColorAndroid='transparent'
                                 onChangeText={this._onAddRess.bind(this)}
@@ -232,8 +353,7 @@ export default class XinGiayXNScreen extends Component {
                                     })
                                 }}
                             />
-                            <TextInput style={styles.textInput} editable={false} placeholder={"Chọn Tỉnh/Thành"}
-                                placeholderTextColor={"black"}>{this.state.nameTinh}</TextInput>
+                            <TextInput style={styles.textInput} editable={false} placeholder={"Chọn Tỉnh/Thành"}>{this.state.nameTinh}</TextInput>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.inputContainer} onPress={() => { this.pickerRef2.show() }}>
                             <Image style={styles.inputIcon} source={Address} />
@@ -249,8 +369,7 @@ export default class XinGiayXNScreen extends Component {
                                         nameHuyen: this.state.huyenList[i]
                                     })
                                 }} />
-                            <TextInput style={styles.textInput} editable={false} placeholder={"Chọn Quận/Huyện"}
-                                placeholderTextColor={"black"}>{this.state.nameHuyen}</TextInput>
+                            <TextInput style={styles.textInput} editable={false} placeholder={"Chọn Quận/Huyện"}>{this.state.nameHuyen}</TextInput>
                         </TouchableOpacity>
                         <TouchableOpacity style={styles.inputContainer} onPress={() => { this.pickerRef3.show() }}>
                             <Image style={styles.inputIcon} source={Address} />
@@ -265,8 +384,7 @@ export default class XinGiayXNScreen extends Component {
                                         nameXa: this.state.xaList[i]
                                     })
                                 }} />
-                            <TextInput style={styles.textInput} editable={false} placeholder={"Chọn Xã/Phường"}
-                                placeholderTextColor={"black"}>{this.state.nameXa}</TextInput>
+                            <TextInput style={styles.textInput} editable={false} placeholder={"Chọn Xã/Phường"}>{this.state.nameXa}</TextInput>
                         </TouchableOpacity>
                         <View style={{ flexDirection: "row", justifyContent: "center", alignItems: "center", marginBottom: 10 }}>
                             <Text style={{ fontWeight: "bold", marginRight: 10 }}>NƠI SINH: </Text>
@@ -284,8 +402,7 @@ export default class XinGiayXNScreen extends Component {
                                         })
                                     }}
                                 />
-                                <TextInput numberOfLines={1} editable={false} style={[styles.textInput, { flex: 1 }]} placeholder={"Chọn Tỉnh/Thành"}
-                                    placeholderTextColor={"black"}>{this.state.birthPlace}</TextInput>
+                                <TextInput numberOfLines={1} editable={false} style={[styles.textInput, { flex: 1 }]} placeholder={"Chọn Tỉnh/Thành"}>{this.state.birthPlace}</TextInput>
                             </TouchableOpacity>
                         </View>
 
@@ -321,7 +438,6 @@ export default class XinGiayXNScreen extends Component {
                             <View style={[styles.inputContainer, { flex: 1 }]}>
                                 <TextInput style={styles.textInput}
                                     placeholder="I/2015 - 2016"
-                                    placeholderTextColor={"black"}
                                     keyboardType="default"
                                     underlineColorAndroid='transparent'
                                     value={this.state.semester}
@@ -338,7 +454,6 @@ export default class XinGiayXNScreen extends Component {
                                 multiline={true}
                                 numberOfLines={4}
                                 placeholder=""
-                                placeholderTextColor={"black"}
                                 keyboardType="default"
                                 underlineColorAndroid='transparent'
                                 value={this.state.reason}
@@ -347,12 +462,18 @@ export default class XinGiayXNScreen extends Component {
                                 })}
                             />
                         </View>
-                        <TouchableHighlight disabled={!(this.state.addRess != "" && this.state.nameTinh != "" && this.state.nameHuyen != "" && this.state.nameXa != "" && this.state.birthPlace != "" && this.state.semester != "" && this.state.reason != "")} style={[styles.buttonContainer]} onPress={this._onPressConfirm.bind(this)}>
+                        <TouchableOpacity
+                            disabled={!(this.state.addRess != "" && this.state.nameTinh != "" && this.state.nameHuyen != "" && this.state.nameXa != "" && this.state.birthPlace != "" && this.state.semester != "" && this.state.reason != "")}
+                            style={[styles.buttonContainer]}
+                            onPress={() => {
+                                this.setModalVisible(true);
+                            }}
+                        >
                             <Text style={styles.loginText}>Đăng ký</Text>
-                        </TouchableHighlight>
+                        </TouchableOpacity>
                     </ScrollView>
                 </View>
-            </View>
+            </View >
         );
     }
 }

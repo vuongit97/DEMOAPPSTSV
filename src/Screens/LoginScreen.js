@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet,Text,View,TextInput,TouchableHighlight,Image,Alert, ActivityIndicator,AsyncStorage } from 'react-native';
+import { StyleSheet,Text,View,TextInput,TouchableOpacity,Image,Alert, ActivityIndicator,AsyncStorage } from 'react-native';
 import env from '../environment/env';
 
 const BASE_URL = env;
@@ -121,13 +121,13 @@ export default class LoginScreen extends Component {
                     />
                 </View>
 
-                <TouchableHighlight style={[styles.buttonContainer, styles.loginButton]} onPress={()=>this._onPressLogin()}>
+                <TouchableOpacity style={[styles.buttonContainer, styles.loginButton]} onPress={()=>this._onPressLogin()}>
                     <Text style={styles.loginText}>Login</Text>
-                </TouchableHighlight>
+                </TouchableOpacity>
 
-                <TouchableHighlight style={styles.buttonContainer} onPress={() => this.forgotClick()}>
+                <TouchableOpacity style={styles.buttonContainer} onPress={() => this.forgotClick()}>
                     <Text>Forgot your password?</Text>
-                </TouchableHighlight>
+                </TouchableOpacity>
 
 
             </View>

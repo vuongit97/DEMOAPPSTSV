@@ -15,3 +15,13 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-dontshrink 
+-keep class javax.** {*;} 
+-keep class com.sun.** {*;} 
+-keep class myjava.** {*;} 
+-keep class org.apache.harmony.** {*;} 
+-dontwarn java.awt.** 
+-dontwarn java.beans.Beans 
+-dontwarn javax.security.** 
+-dontwarn javax.activation.** 

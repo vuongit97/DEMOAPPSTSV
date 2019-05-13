@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, TouchableHighlight, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import HeaderComponent from '../Components/HeaderComponent';
 import ReactNativePickerModule from 'react-native-picker-module';
 
@@ -87,9 +87,9 @@ export default class XinBangDiemScreen extends Component {
                         <Text style={styles.text}>{this.state.Semester[this.state.valueSemester]}</Text>
                     </TouchableOpacity>
 
-                    <TouchableHighlight style={[styles.buttonContainer]} onPress={this._onPressConfirm.bind(this)}>
+                    <TouchableOpacity style={[styles.buttonContainer]} onPress={this._onPressConfirm.bind(this)}>
                         <Text style={styles.loginText}>Đăng ký</Text>
-                    </TouchableHighlight>
+                    </TouchableOpacity>
 
                 </View>
             </ScrollView>

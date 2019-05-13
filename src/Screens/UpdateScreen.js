@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, AsyncStorage, Image, TextInput, TouchableHighlight, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, AsyncStorage, Image, TextInput, TouchableOpacity, ScrollView } from 'react-native';
 import HeaderComponent from '../Components/HeaderComponent';
 import env from '../environment/env';
 
@@ -126,9 +126,9 @@ export default class UpdateScreen extends Component {
                             onChangeText={this._onEmail.bind(this)}
                         />
                     </View>
-                    <TouchableHighlight style={[styles.buttonContainer]} onPress={this._onPressConfirm.bind(this)}>
+                    <TouchableOpacity style={[styles.buttonContainer]} onPress={this._onPressConfirm.bind(this)}>
                         <Text style={styles.loginText}>Cập nhật</Text>
-                    </TouchableHighlight>
+                    </TouchableOpacity>
                 </View>
             </ScrollView>
         );

@@ -3,6 +3,7 @@ package com.demoappsotay;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import com.reactlibrary.RNSmtpMailerPackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.taluttasgiran.pickermodule.ReactNativePickerModulePackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
@@ -26,6 +27,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
+            new RNSmtpMailerPackage(),
             new PickerPackage(),
             new ReactNativePickerModulePackage(),
             new RNGestureHandlerPackage()
