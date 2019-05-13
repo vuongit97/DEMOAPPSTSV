@@ -55,11 +55,8 @@ export default class XinGiayXNScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            fullName: '',
             addRess: '',
             yearStudent: 1,
-            valueRole: null,
-            Role: ['Male', 'Female'],
             valueTinh: null,
             nameTinh: '',
             valueBirthPlace: null,
@@ -154,7 +151,25 @@ export default class XinGiayXNScreen extends Component {
             });
     }
 
+    _getInfomation = async () => {
+        const userToken = await AsyncStorage.getItem(STORAGE_KEY);
+        let url = BASE_URL + 'Account/GetUserInformation'
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                Authorization: 'Bearer ' + userToken,
+            },
+        })
+            .then((res) => res.json())
+            .then((resJson) => {
+                this.setState({
+                    usernameMail: resJson.email,
+                })
+            });
+    }
+
     componentWillMount() {
+        this._getInfomation();
         this.getdata();
     }
 
@@ -261,7 +276,7 @@ export default class XinGiayXNScreen extends Component {
                         transparent={true}
                         visible={this.state.modalVisible}
                         onRequestClose={() => {
-                            Alert.alert('Modal has been closed.');
+                            this.setModalVisible(false);
                         }}>
                         <View style={{ height: '70%', marginTop: 80, marginHorizontal: 40, justifyContent: "center", alignItems: "center", borderRadius: 5, backgroundColor: "#f1f1f1" }}>
                             <View>
@@ -284,8 +299,10 @@ export default class XinGiayXNScreen extends Component {
                                     <Image style={styles.inputIcon} source={name} />
                                     <TextInput style={styles.textInput}
                                         placeholder="Tên tài khoản"
+                                        editable={false}
                                         keyboardType="default"
                                         underlineColorAndroid='transparent'
+                                        value={this.state.usernameMail}
                                         onChangeText={(text) => this.setState({ usernameMail: text })}
                                     />
                                 </View>
@@ -406,7 +423,7 @@ export default class XinGiayXNScreen extends Component {
                                     items={this.state.tinhList}
                                     onValueChange={(i) => {
                                         this.setState({
-                                            valueTinh: i,
+                                            valueBirthPlace: i,
                                             birthPlace: this.state.tinhList[i]
                                         })
                                     }}
