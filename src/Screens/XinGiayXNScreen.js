@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ScrollView, Linking, Modal, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ScrollView, Linking, Modal, Alert, AsyncStorage } from 'react-native';
 import HeaderComponent from '../Components/HeaderComponent';
 import ReactNativePickerModule from 'react-native-picker-module';
 import RNSmtpMailer from "react-native-smtp-mailer";
 import qs from 'qs';
+import env from '../environment/env';
 
 const xinGiay = require('../Images/xinGiay.png');
 const nganhHoc = require('../Icons/nganhHocIcon.png');
@@ -12,6 +13,10 @@ const name = require('../Icons/name.png');
 const tinh = require('../access/Tinh.json');
 const huyen = require('../access/quan_huyen.json');
 const xa = require('../access/xa_phuong.json');
+
+
+const BASE_URL = env;
+var STORAGE_KEY = 'key_access_token';
 
 async function sendEmail(to, subject, body, options = {}) {
     const { cc, bcc } = options;
@@ -133,12 +138,16 @@ export default class XinGiayXNScreen extends Component {
             headers: {
                 Authorization: 'Bearer ' + userToken,
             },
-            body: {
-                "FormPaperId": "0f504d26-d1ae-4dfa-a10d-4c40ca6eab07"
-            }
+            body: JSON.stringify({
+                FormPaperId: "0f504d26-d1ae-4dfa-a10d-4c40ca6eab07"
+            })
         })
-            .then((res) => res.json())
+            .then((res) => {
+                console.log(res);
+                res.json();
+            })
             .then((resJson) => {
+                console.log(resJson);
                 if (resJson == "true") {
                     Alert.alert("Vui lòng kiểm tra thư của bạn.");
                 }
