@@ -5,6 +5,7 @@ import ChangePassScreen from '../Screens/ChangePassScreen';
 import UpdateScreen from '../Screens/UpdateScreen';
 import XinGiayXNScreen from '../Screens/XinGiayXNScreen';
 import XinBangDiemScreen from '../Screens/XinBangDiemScreen';
+import ThongTinVayVonScreen from '../Screens/ThongTinVayVonScreen';
 import ThoiKhoaBieuScreen from '../Screens/ThoiKhoaBieuScreen';
 import SiderBarComponent from '../Components/SideBarComponent';
 
@@ -27,6 +28,9 @@ const MyDrawerNavigator = createDrawerNavigator({
   },
   XinBangDiem: {
     screen: XinBangDiemScreen, navigationOptions: { header: null, title: "Xin bảng điểm", }
+  },
+  ThongTinVayVon: {
+    screen: ThongTinVayVonScreen, navigationOptions: { header: null, title: "Thông tin vay vốn", }
   },
   XemTKB: {
     screen: ThoiKhoaBieuScreen, navigationOptions: { header: null, title: "Xem thời khoá biểu", }

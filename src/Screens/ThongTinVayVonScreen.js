@@ -12,7 +12,7 @@ const id = require('../Icons/IdIcon.png');
 const BASE_URL = env;
 var STORAGE_KEY = 'key_access_token';
 
-export default class XinBangDiemScreen extends Component {
+export default class ThongTinVayVonScreen extends Component {
     static navigationOptions = {
         drawerIcon: ({ icon }) => (
             <Image source={xinGiay} resizeMode="contain" style={[styles.icon1]} />
@@ -21,33 +21,17 @@ export default class XinBangDiemScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            fullName: '',
-            masv: '',
-            livingClass: '',
-            Semester: ['Học kì I', 'Học kì II', 'Học kì III', 'Học kì IV', 'Học kì V', 'Học kì VI', 'Tất cả học kì'],
-            valueSemester: null,
-            nameSemester: "",
+            ngayCapCMND: '',
+            noiCapCMND: '',
+            hocPhi: null,
+            thuocDien: ['Không miễn giảm', 'Giảm học phí', 'Miễn học phí'],
+            nameDien: "",
+            thuocDoiTuong: ['Không mồ côi', 'Mồ côi'],
+            nameDoiTuong: "",
             modalVisible: false,
             usernameMail: "",
             passwordMail: "",
         }
-    }
-
-    _getInfomation = async () => {
-        const userToken = await AsyncStorage.getItem(STORAGE_KEY);
-        let url = BASE_URL + 'Account/GetUserInformation'
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                Authorization: 'Bearer ' + userToken,
-            },
-        })
-            .then((res) => res.json())
-            .then((resJson) => {
-                this.setState({
-                    usernameMail: resJson.email,
-                })
-            });
     }
 
     setModalVisible(visible) {
@@ -57,8 +41,8 @@ export default class XinBangDiemScreen extends Component {
     _onPressConfirm = () => {
         this.setModalVisible(!this.state.modalVisible);
         let to = "vuongjp97@gmail.com";
-        let subject = "Xin cấp bảng điểm kết quả học tập";
-        let body = `- Họ và tên sinh viên: ${this.state.fullName}<br>- Mã sinh viên: ${this.state.masv}<br>- Lớp sinh hoạt: ${this.state.livingClass}<br>- Các học kỳ xin cấp bảng điểm: ${this.state.nameSemester}`;
+        let subject = "Xin cấp thông tin vay vốn";
+        let body = `- Ngày cấp CMND: ${this.state.ngayCapCMND}<br>- Nơi cấp CMND: ${this.state.noiCapCMND}<br>- Học phí hằng tháng: ${this.state.hocPhi}<br>- Thuộc diện: ${this.state.nameDien}<br>- Thuộc đối tượng: ${this.state.nameDoiTuong}`;
 
         RNSmtpMailer.sendMail({
             mailhost: "smtp.gmail.com",
@@ -87,11 +71,11 @@ export default class XinBangDiemScreen extends Component {
         let from = "vuongjp97@gmail.com";
         let passMail = "hdtgknvvw0";
         let to = this.state.usernameMail;
-        let subject = "Bạn đã đăng ký xin cấp bảng điểm kết quả học tập thành công";
+        let subject = "Bạn đã đăng ký xin cấp thông tin vay vốn thành công";
         let today = new Date();
         let date = today.getDate() + "-" + parseInt(today.getMonth() + 1) + "-" + today.getFullYear() + " " + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 
-        let body = `Bạn đã đăng ký xin cấp bảng điểm kết quả học tập vào lúc ${date}.<br>Hẹn bạn sau 3 ngày kể từ ngày đăng ký về phòng công tác học sinh, sinh viên để nhận bảng điểm kết quả học tập!`;
+        let body = `Bạn đã đăng ký xin cấp thông tin vay vốn vào lúc ${date}.<br>Hẹn bạn sau 3 ngày kể từ ngày đăng ký về phòng công tác học sinh, sinh viên để nhận kết quả thông tin vay vốn!`;
 
         RNSmtpMailer.sendMail({
             mailhost: "smtp.gmail.com",
@@ -115,6 +99,22 @@ export default class XinBangDiemScreen extends Component {
             });
     }
 
+    _getInfomation = async () => {
+        const userToken = await AsyncStorage.getItem(STORAGE_KEY);
+        let url = BASE_URL + 'Account/GetUserInformation'
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                Authorization: 'Bearer ' + userToken,
+            },
+        })
+            .then((res) => res.json())
+            .then((resJson) => {
+                this.setState({
+                    usernameMail: resJson.email,
+                })
+            });
+    }
 
     componentWillMount() {
         this._getInfomation();
@@ -210,11 +210,12 @@ export default class XinBangDiemScreen extends Component {
                     <View style={styles.inputContainer}>
                         <Image style={styles.inputIcon} source={name} />
                         <TextInput style={styles.textInput}
-                            placeholder="Họ Tên"
+                            placeholder="Ngày cấp CMND"
                             keyboardType="default"
                             underlineColorAndroid='transparent'
+                            value={this.state.ngayCapCMND}
                             onChangeText={(text) => this.setState({
-                                fullName: text
+                                ngayCapCMND: text
                             })}
                         />
                     </View>
@@ -222,11 +223,12 @@ export default class XinBangDiemScreen extends Component {
                     <View style={styles.inputContainer}>
                         <Image style={styles.inputIcon} source={id} />
                         <TextInput style={styles.textInput}
-                            placeholder="Mã Sinh Viên"
-                            keyboardType="number-pad"
+                            placeholder="Nơi cấp CMND"
+                            keyboardType="default"
                             underlineColorAndroid='transparent'
+                            value={this.state.noiCapCMND}
                             onChangeText={(text) => this.setState({
-                                masv: text
+                                noiCapCMND: text
                             })}
                         />
                     </View>
@@ -234,11 +236,12 @@ export default class XinBangDiemScreen extends Component {
                     <View style={styles.inputContainer}>
                         <Image style={styles.inputIcon} source={name} />
                         <TextInput style={styles.textInput}
-                            placeholder="Lớp sinh hoạt"
-                            keyboardType="default"
+                            placeholder="Học phí hằng tháng"
+                            value={this.state.hocPhi}
+                            keyboardType="number-pad"
                             underlineColorAndroid='transparent'
                             onChangeText={(text) => this.setState({
-                                livingClass: text
+                                hocPhi: text
                             })}
                         />
                     </View>
@@ -247,20 +250,36 @@ export default class XinBangDiemScreen extends Component {
                         <Image style={styles.inputIcon} source={xinGiay} />
                         <ReactNativePickerModule
                             pickerRef={e => this.pickerRef = e}
-                            value={this.state.valueSemester}
-                            title={"Chọn Học Kỳ"}
-                            items={this.state.Semester}
+                            value={this.state.valueThuocDien}
+                            title={"Thuộc diện"}
+                            items={this.state.thuocDien}
                             onValueChange={(i) => {
                                 this.setState({
-                                    valueSemester: i,
-                                    nameSemester: this.state.Semester[i]
+                                    valueThuocDien: i,
+                                    nameDien: this.state.thuocDien[i]
                                 })
                             }} />
-                        <Text style={styles.text}>{this.state.nameSemester}</Text>
+                        <Text style={styles.text}>{this.state.nameDien}</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.inputContainer} onPress={() => { this.pickerRef1.show() }}>
+                        <Image style={styles.inputIcon} source={xinGiay} />
+                        <ReactNativePickerModule
+                            pickerRef={e => this.pickerRef1 = e}
+                            value={this.state.valueDoiTuong}
+                            title={"Thuộc đối tượng"}
+                            items={this.state.thuocDoiTuong}
+                            onValueChange={(i) => {
+                                this.setState({
+                                    valueDoiTuong: i,
+                                    nameDoiTuong: this.state.thuocDoiTuong[i]
+                                })
+                            }} />
+                        <Text style={styles.text}>{this.state.nameDoiTuong}</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity style={[styles.buttonContainer]}
-                        // disabled={!(this.state.fullName != "" && this.state.masv != "" && this.state.livingClass != "" && this.state.nameSemester != "")}
+                        disabled={!(this.state.ngayCapCMND != "" && this.state.noiCapCMND != "" && this.state.hocPhi != "" && this.state.nameDien != "" && this.state.nameDoiTuong != "")}
                         // onPress={this._onPressConfirm.bind(this)}
                         onPress={() =>
                             this.setModalVisible(true)

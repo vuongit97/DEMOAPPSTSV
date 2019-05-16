@@ -41,6 +41,11 @@ export default class HeaderComponent extends Component {
         routerName: "Xin bảng điểm",
       });
     }
+    else if (this.props.navigation.state.key == 'ThongTinVayVon') {
+      this.setState({
+        routerName: "Thông tin vay vốn",
+      });
+    }
     else if (this.props.navigation.state.key == 'XemTKB') {
       this.setState({
         routerName: "Xem thời khoá biểu",
