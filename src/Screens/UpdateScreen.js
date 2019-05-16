@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, AsyncStorage, Image, TextInput, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, AsyncStorage, Image, TextInput, TouchableOpacity, ScrollView, ToastAndroid } from 'react-native';
 import HeaderComponent from '../Components/HeaderComponent';
 import env from '../environment/env';
 
@@ -26,18 +26,31 @@ export default class UpdateScreen extends Component {
             Email: '',
         }
     }
-    _onBirthplace = (Birthplace) => {
-        this.setState({ Birthplace });
+
+    componentWillMount = async () => {
+        this._getInfomation();
     }
-    _onAddress = (Address) => {
-        this.setState({ Address });
+
+    _getInfomation = async () => {
+        const userToken = await AsyncStorage.getItem(STORAGE_KEY);
+        let url = BASE_URL + 'Account/GetUserInformation'
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                Authorization: 'Bearer ' + userToken,
+            },
+        })
+            .then((res) => res.json())
+            .then((resJson) => {
+                this.setState({
+                    PhoneNumber: resJson.phoneNumber,
+                    Email: resJson.email,
+                    Address: resJson.address,
+                    Birthplace: resJson.dateOfBirth,
+                })
+            });
     }
-    _onPhoneNumber = (PhoneNumber) => {
-        this.setState({ PhoneNumber });
-    }
-    _onEmail = (Email) => {
-        this.setState({ Email });
-    }
+
     _onPressConfirm = () => {
         AsyncStorage.getItem(STORAGE_KEY).then((user_data_json) => {
             this.setState({ loading: true });
@@ -53,7 +66,7 @@ export default class UpdateScreen extends Component {
             let Email = this.state.Email;
             let url = BASE_URL + 'Account/ChangeInformationUser'
             fetch(url, {
-                method: 'POST',
+                method: 'PUT',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -68,6 +81,7 @@ export default class UpdateScreen extends Component {
             })
                 .then((res) => {
                     //console.warn(res);
+                    console.log(res);
                     if (res.ok) {
                         var { navigate } = this.props.navigation;
                         navigate('Home');
@@ -94,18 +108,24 @@ export default class UpdateScreen extends Component {
                         <Image style={styles.inputIcon} source={Address} />
                         <TextInput style={styles.textInput}
                             placeholder="Nơi sinh"
+                            value={this.state.Birthplace}
                             keyboardType="default"
                             underlineColorAndroid='transparent'
-                            onChangeText={this._onBirthplace.bind(this)}
+                            onChangeText={(text) => this.setState({
+                                Birthplace: text
+                            })}
                         />
                     </View>
                     <View style={styles.inputContainer}>
                         <Image style={styles.inputIcon} source={Address} />
                         <TextInput style={styles.textInput}
                             placeholder="Địa chỉ"
+                            value={this.state.Address}
                             keyboardType="default"
                             underlineColorAndroid='transparent'
-                            onChangeText={this._onAddress.bind(this)}
+                            onChangeText={(text) => this.setState({
+                                Address: text
+                            })}
                         />
                     </View>
                     <View style={styles.inputContainer}>
@@ -113,17 +133,23 @@ export default class UpdateScreen extends Component {
                         <TextInput style={styles.textInput}
                             placeholder="Số điện thoại"
                             keyboardType="phone-pad"
+                            value={this.state.PhoneNumber}
                             underlineColorAndroid='transparent'
-                            onChangeText={this._onPhoneNumber.bind(this)}
+                            onChangeText={(text) => this.setState({
+                                PhoneNumber: text
+                            })}
                         />
                     </View>
                     <View style={styles.inputContainer}>
                         <Image style={styles.inputIcon} source={iEmail} />
                         <TextInput style={styles.textInput}
                             placeholder="Email"
+                            value={this.state.Email}
                             keyboardType="email-address"
                             underlineColorAndroid='transparent'
-                            onChangeText={this._onEmail.bind(this)}
+                            onChangeText={(text) => this.setState({
+                                Email: text
+                            })}
                         />
                     </View>
                     <TouchableOpacity style={[styles.buttonContainer]} onPress={this._onPressConfirm.bind(this)}>

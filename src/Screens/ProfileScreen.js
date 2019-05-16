@@ -30,7 +30,7 @@ export default class MainScreen extends React.Component {
         this._getInfomation();
     }
     logoutClick = () => {
-        alert('Onclick');
+        alert(`Tạm biệt ${this.state.lastName} ${this.state.firstName}`);
         this.props.navigation.navigate('Login')
     }
     _getInfomation = async () => {
@@ -108,13 +108,11 @@ export default class MainScreen extends React.Component {
                                 <Image
                                     source={{ uri: this.state.urlAvatar }}
                                     style={styles.imageProfile}
-                                    resizeMode="center"
                                 />
                                 :
                                 <Image
                                     source={profile}
                                     style={styles.imageProfile}
-                                    resizeMode="center"
                                 />
                         }
                     </TouchableOpacity>
@@ -184,6 +182,7 @@ const styles = StyleSheet.create({
     imageProfile: {
         height: 60,
         width: 60,
+        borderRadius: 60,
         marginTop: 10
     },
     logout: {
