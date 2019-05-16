@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, Image, TouchableOpacity, StyleSheet, AsyncStorage } from 'react-native';
 import { DrawerItems } from 'react-navigation';
 import env from '../environment/env';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const BASE_URL = env;
 var STORAGE_KEY = 'key_access_token';
@@ -49,7 +50,7 @@ export default class SiderBarComponent extends Component {
     render() {
         const props = this.props;
         return (
-            <View style={styles.container}>
+            <ScrollView style={styles.container}>
                 <View style={styles.profileContainer}>
                     {
                         this.state.urlAvatar ?
@@ -66,7 +67,7 @@ export default class SiderBarComponent extends Component {
                     <Image source={logout} resizeMode="contain" style={styles.icon} />
                     <Text style={styles.signOutText}>Thoát ứng dụng</Text>
                 </TouchableOpacity>
-            </View>
+            </ScrollView>
         )
     }
 }
