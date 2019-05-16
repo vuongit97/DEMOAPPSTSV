@@ -81,7 +81,7 @@ export default class XinGiayXNScreen extends Component {
             attachmentTypes: ["img", "txt", "csv", "pdf", "zip", "img"]
         })
             .then(success => {
-                Alert.alert(success);
+                Alert.alert(`Đã gửi mail thành công`);
                 this._sendEmailReplyAPI();
             })
             .catch(err => {
@@ -118,7 +118,7 @@ export default class XinGiayXNScreen extends Component {
                 Alert.alert("Vui lòng kiểm tra thư điện tử của bạn.");
             })
             .catch(err => {
-                Alert.alert(err.message);
+                Alert.alert(`Không gửi được mail, đã có lỗi xảy ra`);
             });
     }
 
