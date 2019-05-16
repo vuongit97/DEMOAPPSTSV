@@ -3,7 +3,6 @@ import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, ScrollView,
 import HeaderComponent from '../Components/HeaderComponent';
 import ReactNativePickerModule from 'react-native-picker-module';
 import RNSmtpMailer from "react-native-smtp-mailer";
-import qs from 'qs';
 import env from '../environment/env';
 
 const xinGiay = require('../Images/xinGiay.png');
@@ -14,36 +13,8 @@ const tinh = require('../access/Tinh.json');
 const huyen = require('../access/quan_huyen.json');
 const xa = require('../access/xa_phuong.json');
 
-
 const BASE_URL = env;
 var STORAGE_KEY = 'key_access_token';
-
-async function sendEmail(to, subject, body, options = {}) {
-    const { cc, bcc } = options;
-
-    let url = `mailto:${to}`;
-
-    // Create email link query
-    const query = qs.stringify({
-        subject: subject,
-        body: body,
-        cc: cc,
-        bcc: bcc
-    });
-
-    if (query.length) {
-        url += `?${query}`;
-    }
-
-    // check if we can use this link
-    const canOpen = await Linking.canOpenURL(url);
-
-    if (!canOpen) {
-        throw new Error('Provided URL can not be handled');
-    }
-
-    return Linking.openURL(url);
-}
 
 
 export default class XinGiayXNScreen extends Component {
@@ -91,17 +62,9 @@ export default class XinGiayXNScreen extends Component {
 
     _onPressConfirm = () => {
         this.setModalVisible(!this.state.modalVisible);
-        let to = "vuongit97@gmail.com";
+        let to = "vuongjp97@gmail.com";
         let subject = "Xin giấy xác nhận";
         let body = `- Địa chỉ: ${this.state.addRess}<br>- Tỉnh/Thành phố: ${this.state.nameTinh}<br>- Huyện/quận: ${this.state.nameHuyen}<br>- Xã/phường: ${this.state.nameXa}<br>- Nơi sinh: ${this.state.birthPlace}<br>- Sinh viên năm: ${this.state.yearStudent}<br>- Học kỳ: ${this.state.semester}<br>- Lý do: ${this.state.reason}`;
-
-        // sendEmail(
-        //     to,
-        //     subject,
-        //     body,
-        // ).then(() => {
-        //     console.log('Our email successful provided to device mail ');
-        // });
 
         RNSmtpMailer.sendMail({
             mailhost: "smtp.gmail.com",
@@ -122,32 +85,40 @@ export default class XinGiayXNScreen extends Component {
                 this._sendEmailReplyAPI();
             })
             .catch(err => {
-                Alert.alert(err.message);
+                Alert.alert("Vui lòng kiểm tra lại tài khoản của bạn.");
             });
     }
 
 
-    _sendEmailReplyAPI = async () => {
-        const userToken = await AsyncStorage.getItem(STORAGE_KEY);
-        let url = BASE_URL + 'Account/RegisFormPaper'
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                Authorization: 'Bearer ' + userToken,
-            },
-            body: JSON.stringify({
-                FormPaperId: "0f504d26-d1ae-4dfa-a10d-4c40ca6eab07"
-            })
+    _sendEmailReplyAPI = () => {
+        let from = "vuongjp97@gmail.com";
+        let passMail = "hdtgknvvw0";
+        let to = this.state.usernameMail;
+        let subject = "Bạn đã đăng ký giấy xác nhận thành công";
+        let today = new Date();
+        let date = today.getDate() + "-" + parseInt(today.getMonth() + 1) + "-" + today.getFullYear() + " " + today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+
+        let body = `Bạn đã đăng ký Giấy xác nhận đang học tại trường vào lúc ${date}.<br>Hẹn bạn sau 3 ngày kể từ ngày đăng ký về phòng đào tạo để nhận giấy xác nhận!`;
+
+        RNSmtpMailer.sendMail({
+            mailhost: "smtp.gmail.com",
+            port: "465",
+            ssl: true,
+            username: from,
+            password: passMail,
+            from: from,
+            recipients: to,
+            subject: subject,
+            htmlBody: body,
+            attachmentPaths: [],
+            attachmentNames: [],
+            attachmentTypes: ["img", "txt", "csv", "pdf", "zip", "img"]
         })
-            .then((res) => {
-                console.log(res);
-                res.json();
+            .then(success => {
+                Alert.alert("Vui lòng kiểm tra thư điện tử của bạn.");
             })
-            .then((resJson) => {
-                console.log(resJson);
-                if (resJson == "true") {
-                    Alert.alert("Vui lòng kiểm tra thư của bạn.");
-                }
+            .catch(err => {
+                Alert.alert(err.message);
             });
     }
 
