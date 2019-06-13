@@ -10,6 +10,8 @@ target 'DemoAppSoTay' do
   target 'DemoAppSoTay-tvOSTests' do
     inherit! :search_paths
     # Pods for testing
+    pod 'RNImageCropPicker', :path => '../node_modules/react-native-image-crop-picker'
+
   end
 
   target 'DemoAppSoTayTests' do

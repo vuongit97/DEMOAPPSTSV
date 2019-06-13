@@ -46,7 +46,7 @@ export default class UpdateScreen extends Component {
                     PhoneNumber: resJson.phoneNumber,
                     Email: resJson.email,
                     Address: resJson.address,
-                    Birthplace: resJson.dateOfBirth,
+                    Birthplace: resJson.Birthplace,
                 })
             });
     }

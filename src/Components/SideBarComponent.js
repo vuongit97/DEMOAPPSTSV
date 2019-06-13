@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
     },
     userInfoText: {
         color: '#fff',
-        fontSize: 18,
+        fontSize: 15,
         marginTop: 10
     },
     btnSignOut: {
