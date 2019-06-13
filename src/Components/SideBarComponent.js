@@ -54,9 +54,9 @@ export default class SiderBarComponent extends Component {
                 <View style={styles.profileContainer}>
                     {
                         this.state.urlAvatar ?
-                            <Image style={{ width: 70, height: 70, borderRadius: 60, marginTop: 35 }} source={{ uri: this.state.urlAvatar }} />
+                            <Image style={{ width: 100, height: 100, borderRadius: 60, marginTop: 35 }} source={{ uri: this.state.urlAvatar }} />
                             :
-                            <Image style={{ width: 70, height: 70, borderRadius: 60, marginTop: 35 }} source={profile} />
+                            <Image style={{ width: 100, height: 100, borderRadius: 60, marginTop: 35 }} source={profile} />
                     }
                     <Text style={styles.userInfoText}>{this.state.lastName} {this.state.firstName}</Text>
                 </View>

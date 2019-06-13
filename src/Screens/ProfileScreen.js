@@ -63,8 +63,8 @@ export default class MainScreen extends React.Component {
         ImagePicker.openPicker({
             // cropping: true,
             includeExif: true,
-            width: 800,
-            height: 800,
+            width: 1000,
+            height: 1000,
             includeBase64: true,
             path: true,
             type: true
@@ -180,8 +180,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#81F7F3',
     },
     imageProfile: {
-        height: 60,
-        width: 60,
+        height: 100,
+        width: 100,
         borderRadius: 60,
         marginTop: 10
     },

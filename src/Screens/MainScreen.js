@@ -69,10 +69,10 @@ export default class MainScreen extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#fff',
+        //backgroundColor: '#fff',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#99FFFF',
+        //backgroundColor: '#99FFFF',
 
     },
     icon1: {
