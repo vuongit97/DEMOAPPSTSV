@@ -5362,6 +5362,11 @@ react-native-simple-radio-button@^2.7.3:
   resolved "https://registry.yarnpkg.com/react-native-simple-radio-button/-/react-native-simple-radio-button-2.7.3.tgz#c7227c0f963d6bbcfa245255d18a5a8b98fde41f"
   integrity sha512-kiYRarFj7PXzV9fbQwMBiYwS4YnhrR4NZGT68atlFIoNFxZLrt5OMCDqXZqu6R6bUWKLndzPpO/nhXc6/OU1Mg==
 
+react-native-smtp-mailer@^1.1.10:
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/react-native-smtp-mailer/-/react-native-smtp-mailer-1.2.4.tgz#86dae238f93ed98832fefc88636fdbc977a61688"
+  integrity sha512-HLgqevfRWxSUmy5lFFCff5/9URbg2mN/WXVuMIBSqGko7brcuRGk18svghqFVzP+RMFeYZrDABHW11rAmaQHog==
+
 react-native-tab-view@^1.0.0, react-native-tab-view@^1.2.0:
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/react-native-tab-view/-/react-native-tab-view-1.3.4.tgz#63fc3eb09652651d0ea0e016cff0f3a5e535f4de"
@@ -6434,9 +6439,9 @@ typedarray@^0.0.6:
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
 ua-parser-js@^0.7.18:
-  version "0.7.19"
-  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.19.tgz#94151be4c0a7fb1d001af7022fdaca4642659e4b"
-  integrity sha512-T3PVJ6uz8i0HzPxOF9SWzWAlfN/DavlpQqepn22xgve/5QecC+XMCAtmUNnY7C9StehaV6exjUCI801lOI7QlQ==
+  version "0.7.28"
+  resolved "https://registry.yarnpkg.com/ua-parser-js/-/ua-parser-js-0.7.28.tgz#8ba04e653f35ce210239c64661685bf9121dec31"
+  integrity sha512-6Gurc1n//gjp9eQNXjD9O3M/sMwVtN5S8Lv9bvOYBfKfDNiIIhqiyi01vMBO45u4zkDE420w/e0se7Vs+sIg+g==
 
 uglify-es@^3.1.9:
   version "3.3.9"
